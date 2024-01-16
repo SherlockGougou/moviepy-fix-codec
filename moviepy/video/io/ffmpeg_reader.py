@@ -805,8 +805,13 @@ def ffmpeg_parse_infos(
 
     proc = sp.Popen(cmd, **popen_params)
     (output, error) = proc.communicate()
-    infos = error.decode("utf8", errors="ignore")
-
+    try:
+        infos = error.decode('utf-8', errors="ignore")
+    except UnicodeDecodeError:
+        try:
+            infos = error.decode('ANSI', errors="ignore")
+        except UnicodeDecodeError:
+            infos = error.decode('gbk', errors="ignore")
     proc.terminate()
     del proc
 
